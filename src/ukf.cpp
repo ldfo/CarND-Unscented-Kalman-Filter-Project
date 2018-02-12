@@ -23,12 +23,12 @@ UKF::UKF() {
 
   // initial covariance matrix
   P_ = MatrixXd(5, 5);
-// TODO: finish tuning these parameters
+
   // Process noise standard deviation longitudinal acceleration in m/s^2
-  std_a_ = 1.5;
+  std_a_ = 0.7;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
-  std_yawdd_ = 1.5;
+  std_yawdd_ = 0.6;
   
   //DO NOT MODIFY measurement noise values below these are provided by the sensor manufacturer.
   // Laser measurement noise standard deviation position1 in m
@@ -53,17 +53,12 @@ UKF::UKF() {
   Hint: one or more values initialized above might be wildly off...
   */
 
-  // initially set to false, set to true in first call of ProcessMeasurement
   is_initialized_ = false;
-  // dimension
   n_x_ = 5;
-  // Augmented state dimension
   n_aug_ = 7;
-  // Sigma parameter
   lambda_ = 3 - n_aug_;
   time_us_ = 0;
 
-// initializing matrices
   Xsig_pred_ = MatrixXd(n_aug_, n_aug_);
 }
 
@@ -256,8 +251,9 @@ void UKF::Prediction(double delta_t) {
     Xsig_pred_ = _predict_sigma_points(Xsig_aug, delta_t);
     _predict(&x_, &P_);
 
-   cout << "\npred state : \n"<< x_ << "\n";
-   cout << P_;
+   // print pred state
+   // cout << "\npred state : \n"<< x_ << "\n";
+   // cout << P_;
 }
 
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
@@ -295,7 +291,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
     MatrixXd yt = y.transpose();
     MatrixXd nis = yt * Si * y;
-    nis_ = nis(0, 0);
+    // nis_ = nis(0, 0);
 }
 
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
@@ -324,7 +320,6 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     MatrixXd yt = y.transpose();
     MatrixXd Si = S.inverse();
     MatrixXd nis = yt * Si * y;
-    nis_ = nis(0, 0);
 }
 
 MatrixXd UKF::_measurement_sigma_points(void) {
