@@ -66,7 +66,7 @@ public:
 
   ///* Sigma point spreading parameter
   double lambda_;
-  double nis_;
+  //double nis_;
 
   /**
    * Constructor
